@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20 # Explicitly using Node.js 20 to avoid future issues
+          node-version: 20 # Using Node.js 20 to avoid future issues
 
       - name: Install dependencies
         run: npm install
@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: production-files
-          path: ./build # Assuming the build directory is correct
+          path: ./dist # Assuming the default output directory is "dist"
 
   deploy:
     name: Deploy
@@ -40,16 +40,15 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20 # Ensuring Node.js 20 is used during deploy steps
+          node-version: 20
 
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: production-files
-          path: ./build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./dist # Assuming "dist" is the default output folder
