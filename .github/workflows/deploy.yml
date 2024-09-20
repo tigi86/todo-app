@@ -17,10 +17,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20 # Use Node.js 20 to avoid forced migration issues
+          node-version: 20 # Explicitly using Node.js 20 to avoid future issues
 
       - name: Install dependencies
-        run: npm install # Using npm directly for flexibility
+        run: npm install
 
       - name: Build project
         run: npm run build
@@ -35,9 +35,13 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
 
     steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20 # Ensuring Node.js 20 is used during deploy steps
+
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
