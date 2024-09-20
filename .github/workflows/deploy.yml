@@ -11,31 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 # Node.js 20 will be used
 
+      # Step 2: Setup Node.js version 20
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 20 # Ensure Node.js 20 is used
 
+      # Step 3: Install the dependencies
       - name: Install dependencies
         run: npm install
 
+      # Step 4: Build the project
       - name: Build project
         run: npm run build
 
-      - name: Verify build output directory
-        run: |
-          echo "Checking for build output..."
-          ls -l ./dist || echo "dist directory not found!"
-          ls -l ./build || echo "build directory not found!"
-
+      # Step 5: Upload the production-ready build files
       - name: Upload production-ready build files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4 # Use v4 of upload-artifact
         with:
           name: production-files
-          path: ./dist # or ./build, depending on your setup
+          path: ./dist # Assuming Vite uses 'dist' as build output
 
   deploy:
     name: Deploy
@@ -43,18 +42,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Setup Node.js version 20
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 20 # Ensure Node.js 20 is used
 
+      # Step 2: Download the artifact (build files)
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: production-files
 
+      # Step 3: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v4 # Use the latest version for Node.js 20 support
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # or ./build depending on what you use
+          publish_dir: ./dist # Change to './build' if you're using a different build output
