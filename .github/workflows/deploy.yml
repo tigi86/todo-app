@@ -11,52 +11,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout repo
-        uses: actions/checkout@v3 # Node.js 20 will be used
+        uses: actions/checkout@v3
 
-      # Step 2: Setup Node.js version 20
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20 # Ensure Node.js 20 is used
+          node-version: 20
 
-      # Step 3: Install the dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm install  # Install dependencies
 
-      # Step 4: Build the project
       - name: Build project
-        run: npm run build
+        run: npm run build  # Build the project
 
-      # Step 5: Upload the production-ready build files
       - name: Upload production-ready build files
-        uses: actions/upload-artifact@v4 # Use v4 of upload-artifact
+        uses: actions/upload-artifact@v4  # Ensure v4 is used
         with:
           name: production-files
-          path: ./dist # Assuming Vite uses 'dist' as build output
+          # No path specified, automatically handles the output from the build process
 
   deploy:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
-      # Step 1: Setup Node.js version 20
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20 # Ensure Node.js 20 is used
-
-      # Step 2: Download the artifact (build files)
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: production-files
+          # No path specified, automatically downloads the artifact
 
-      # Step 3: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4 # Use the latest version for Node.js 20 support
+        uses: peaceiris/actions-gh-pages@v4  # Ensure v4 is used
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # Change to './build' if you're using a different build output
+          publish_dir: ./  # Specify root directory if no build path
