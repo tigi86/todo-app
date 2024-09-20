@@ -12,12 +12,12 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3 # Will run on Node.js 20 automatically
+        uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20 # Explicitly using Node.js 20
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
@@ -25,11 +25,17 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Verify build output directory
+        run: |
+          echo "Checking for build output..."
+          ls -l ./dist || echo "dist directory not found!"
+          ls -l ./build || echo "build directory not found!"
+
       - name: Upload production-ready build files
-        uses: actions/upload-artifact@v4 # Updated to v4
+        uses: actions/upload-artifact@v4
         with:
           name: production-files
-          path: ./dist # Assuming default build directory
+          path: ./dist # or ./build, depending on your setup
 
   deploy:
     name: Deploy
@@ -37,10 +43,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20 # Ensuring Node.js 20 during deploy steps
+          node-version: 20
 
       - name: Download artifact
         uses: actions/download-artifact@v3
@@ -48,7 +54,7 @@ jobs:
           name: production-files
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4 # Upgrade to v4 for Node.js 20 support
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # Adjust according to your output directory
+          publish_dir: ./dist # or ./build depending on what you use
