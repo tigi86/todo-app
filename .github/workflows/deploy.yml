@@ -11,41 +11,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Latest version, will use Node.js 20 by default
 
-      - name: Setup Node
+      # Step 2: Setup Node.js version 20
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 20  # Ensure Node.js 20 is used
 
+      # Step 3: Install the dependencies
       - name: Install dependencies
         run: npm install  # Install dependencies
 
+      # Step 4: Build the project
       - name: Build project
         run: npm run build  # Build the project
 
+      # Step 5: Upload the production-ready build files
       - name: Upload production-ready build files
-        uses: actions/upload-artifact@v4  # Ensure v4 is used
+        uses: actions/upload-artifact@v4  # Use the latest version (v4)
         with:
           name: production-files
-          # No path specified, automatically handles the output from the build process
+          path: ./build  # Assuming the build directory is './build'. Change if needed (e.g., './dist' for Vite)
 
   deploy:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
 
     steps:
+      # Step 1: Download the artifact (build files)
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: production-files
-          # No path specified, automatically downloads the artifact
 
+      # Step 2: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4  # Ensure v4 is used
+        uses: peaceiris/actions-gh-pages@v4  # Ensure latest version (v4) is used
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./  # Specify root directory if no build path
+          publish_dir: ./build  # Adjust if your output folder is different
