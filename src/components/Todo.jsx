@@ -44,7 +44,7 @@ const Todo = () => {
     };
 
     // Add the new task to the todoList state
-    setTodoList((prev) => [...prev, newTodo]);
+    setTodoList((prev) => [, newTodo, ...prev]);
 
     // Clear input fields after adding a new todo
     inputRef.current.value = "";
@@ -136,8 +136,8 @@ const Todo = () => {
       </div>
 
       {/* Table for displaying todo items */}
-      <div className="w-[90%]  px-2 flex items-center justify-center">
-        <table className="table-auto w-full sm:w-[60%] md:w-[70%] text-center mt-4 border-collapse border border-gray-300 text-xs sm:text-sm">
+      <div className="w-full m-auto px-2 flex items-center justify-center">
+        <table className="table-auto w-full sm:w-[20%] md:w-[70%] text-center  border-collapse border border-gray-300 text-xs sm:text-sm">
           <thead className="bg-gray-100">
             <tr>
               <th className="p-1 border border-gray-300">Title</th>
